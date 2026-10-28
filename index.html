@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nargis Gullari — Nafis Gullar va Buketlar Do'koni</title>
+  <meta name="description" content="Nargis gullari — yangi uzilgan tabiiy gullar, buketlar, xona gullari va sovg'a qutilari. Telegram (@ibratway) va telefon (+998919020770) orqali tezkor buyurtma bering!" />
+  <meta name="keywords" content="Nargis gullari, gullar do'koni, buketlar, atirgullar, xona gullari, gul buyurtma qilish, sovg'a gullar" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Nargis Gullari — Nafis Gullar va Buketlar Do'koni" />
+  <meta property="og:description" content="Har bir lahzani Nargis gullari bilan go'zallashtiring! Telegram: @ibratway | Tel: +998 91 902 07 70" />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated Floating Petals -->
+  <div class="petals-container" id="petalsContainer"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#bosh-sahifa" class="brand">
+        <img src="logo.png" alt="Nargis Gullari Logo" class="brand-logo" />
+        <div class="brand-text">
+          <h1>Nargis gullari</h1>
+          <span>Nafosat va tabiiy go'zallik</span>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#bosh-sahifa" onclick="toggleMobileMenu()">Bosh sahifa</a></li>
+        <li><a href="#katalog" onclick="toggleMobileMenu()">Gullar bo'limi</a></li>
+        <li><a href="#afzalliklar" onclick="toggleMobileMenu()">Biz haqimizda</a></li>
+        <li><a href="#reklama" onclick="toggleMobileMenu()">Hamkorlik</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-outline" id="adminNavBtn" onclick="handleAdminNavClick()">
+          🔐 Admin kirish
+        </button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menyu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="bosh-sahifa">
+    <div class="hero-content">
+      <div class="hero-badge">
+        🌿 100% Tabiiy va Yangi Uzilgan Gullar
+      </div>
+      <h2>
+        Har bir lahzani <span>Nargis gullari</span> bilan go'zallashtiring
+      </h2>
+      <p>
+        Yaqinlaringizga quvonch ulashish uchun eng nafis buketlar, xona gullari va maxsus sovg'a to'plamlari. Biz bilan har bir kun bayramga aylanadi!
+      </p>
+      <div class="hero-buttons">
+        <a href="#katalog" class="btn btn-primary">
+          🌸 Gullarni ko'rish
+        </a>
+        <a href="https://t.me/ibratway" target="_blank" rel="noopener" class="btn btn-outline">
+          ✈️ Buyurtma: @ibratway
+        </a>
+        <a href="tel:+998919020770" class="btn btn-outline">
+          📞 +998 91 902 07 70
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <strong id="statFlowersCount">8+</strong>
+          <span>Gullar turi</span>
+        </div>
+        <div class="stat-item">
+          <strong id="statCategoriesCount">5 ta</strong>
+          <span>Maxsus bo'limlar</span>
+        </div>
+        <div class="stat-item">
+          <strong>24/7</strong>
+          <span>Tezkor yetkazib berish</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-logo-card">
+        <div class="floating-chip chip-top">
+          <span>🌷</span> Eng sara guldastalar
+        </div>
+        <img src="logo.png" alt="Nargis Gullari Rasmiy Logosi" />
+        <div class="floating-chip chip-bottom">
+          <span>💚</span> Sifat kafolati
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog & Categories Section -->
+  <section class="catalog-section" id="katalog">
+    <div class="section-header">
+      <h3>Bizning Gullar Katalogimiz</h3>
+      <p>O'zingizga ma'qul bo'limni tanlang va nafis gullarimiz bilan tanishing</p>
+    </div>
+
+    <!-- Admin Management Panel (Visible when Admin is logged in) -->
+    <div class="admin-inline-panel" id="adminInlinePanel" style="display: none;">
+      <div class="admin-panel-header">
+        <div>
+          <h4>🛠️ Admin Boshqaruv Paneli</h4>
+          <span id="dbStatusBadge" style="display: inline-block; font-size: 0.8rem; margin-top: 4px; padding: 2px 8px; border-radius: 8px; background: #e0f2fe; color: #0369a1; font-weight: 600;">
+            ☁️ Google Firebase Baza: Ulangan
+          </span>
+        </div>
+        <div class="admin-panel-actions">
+          <button class="btn btn-primary" onclick="openFlowerModal()">
+            ➕ Yangi gul qo'shish
+          </button>
+          <button class="btn btn-outline" onclick="openCategoryModal()">
+            📁 Yangi bo'lim qo'shish
+          </button>
+          <button class="btn btn-outline" onclick="openFirebaseModal()">
+            ⚙️ Baza sozlamalari
+          </button>
+        </div>
+      </div>
+      <div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.65rem; font-weight: 600;">
+          Bo'limlarni tahrirlash (✏️ tugmasi orqali bo'lim nomini o'zgartirishingiz mumkin):
+        </p>
+        <div class="admin-categories-manager" id="adminCategoriesList"></div>
+      </div>
+    </div>
+
+    <!-- Search & Category Buttons -->
+    <div class="catalog-controls">
+      <div class="search-bar-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Gul nomini qidiring (masalan: Atirgul, Nargis, Orxideya)..."
+        />
+      </div>
+      <div class="categories-bar" id="categoriesBar"></div>
+    </div>
+
+    <!-- Flower Cards Grid -->
+    <div class="flowers-grid" id="flowersGrid"></div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="afzalliklar">
+    <div class="section-header">
+      <h3>Nima uchun Nargis Gullari?</h3>
+      <p>Mijozlarimiz bizni tanlashining asosiy sabablari</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🌱</div>
+        <h4>Har doim yangi gullar</h4>
+        <p>Har kuni ertalab eng sifatli va yangi uzilgan gullar saralab olinadi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h4>Individual dizayn</h4>
+        <p>Tajribali floristlarimiz sizning didingizga mos betakror buketlarni tayyorlaydi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h4>Tezkor yetkazish</h4>
+        <p>Buyurtmangizni o'z vaqtida va ehtiyotkorlik bilan manzilingizga yetkazamiz.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h4>Hamyonbop narxlar</h4>
+        <p>Yuqori sifat va chiroyli qadoqlash eng qulay narxlarda taqdim etiladi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LARGE PROMINENT ADVERTISEMENT SECTION -->
+  <section class="promo-mega-section" id="reklama">
+    <div class="promo-mega-card">
+      <span class="promo-tag">🔥 MAXSUS TAKLIF • WEB SAYT YARATISH XIZMATI</span>
+      <h2 class="promo-mega-title">
+        Sizga ham shunday web site kerak bo'lsa <a href="https://t.me/ndilmurodovich" target="_blank" rel="noopener" class="highlight-handle">@ndilmurodovich</a> Telegram orqali murojaat qiling!
+      </h2>
+      <p class="promo-mega-sub">
+        Biznesingiz, do'koningiz yoki shaxsiy brendingiz uchun zamonaviy, animatsiyali, telefon va kompyuterda mukammal ishlaydigan professional web-saytlar yaratib beramiz!
+      </p>
+      <a href="https://t.me/ndilmurodovich" target="_blank" rel="noopener" class="promo-cta-btn">
+        ✈️ @ndilmurodovich ga Telegram orqali yozish
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="brand">
+        <img src="logo.png" alt="Nargis Gullari" class="brand-logo" />
+        <div class="brand-text">
+          <h1>Nargis gullari</h1>
+          <span>Barcha huquqlar himoyalangan © 2026</span>
+        </div>
+      </div>
+      <div class="footer-contacts">
+        <a href="https://t.me/ibratway" target="_blank" rel="noopener" class="footer-contact-pill">
+          ✈️ Telegram: <strong>@ibratway</strong>
+        </a>
+        <a href="tel:+998919020770" class="footer-contact-pill">
+          📞 Tel: <strong>+998 91 902 07 70</strong>
+        </a>
+      </div>
+      <div class="footer-dev">
+        Web sayt muallifi: <a href="https://t.me/ndilmurodovich" target="_blank" rel="noopener">@ndilmurodovich</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: Admin Login -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🔐 Admin Panelga Kirish</h3>
+        <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+      </div>
+      <form id="loginForm" onsubmit="submitAdminLogin(event)">
+        <div class="form-error" id="loginError">
+          ❌ Login yoki parol noto'g'ri kiritildi!
+        </div>
+        <div class="form-group">
+          <label for="adminLoginInput">Admin Login</label>
+          <input
+            type="text"
+            id="adminLoginInput"
+            class="form-control"
+            placeholder="Loginni kiriting"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="adminPassInput">Parol</label>
+          <input
+            type="password"
+            id="adminPassInput"
+            class="form-control"
+            placeholder="Parolni kiriting"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+          Kirish
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Add / Edit Category -->
+  <div class="modal-backdrop" id="categoryModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="catModalTitle">Bo'lim qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('categoryModal')">✕</button>
+      </div>
+      <form onsubmit="submitCategoryForm(event)">
+        <input type="hidden" id="catIdInput" />
+        <div class="form-group">
+          <label for="catNameInput">Bo'lim nomi</label>
+          <input
+            type="text"
+            id="catNameInput"
+            class="form-control"
+            placeholder="Masalan: Buketlar, Xona gullari..."
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="catIconInput">Belgi (Emoji)</label>
+          <input
+            type="text"
+            id="catIconInput"
+            class="form-control"
+            placeholder="🌸, 🌹, 💐, 🪴"
+            value="🌸"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+          Saqlash
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Add / Edit Flower Card -->
+  <div class="modal-backdrop" id="flowerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="flowerModalTitle">Yangi gul qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('flowerModal')">✕</button>
+      </div>
+      <form onsubmit="submitFlowerForm(event)">
+        <input type="hidden" id="flowerIdInput" />
+        <div class="form-group">
+          <label for="flowerNameInput">Gul nomi</label>
+          <input
+            type="text"
+            id="flowerNameInput"
+            class="form-control"
+            placeholder="Masalan: Nargis Bahor Buketi"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="flowerCatSelect">Bo'limni tanlang</label>
+          <select id="flowerCatSelect" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label for="flowerPriceInput">Narxi (so'mda)</label>
+          <input
+            type="text"
+            id="flowerPriceInput"
+            class="form-control"
+            placeholder="Masalan: 250 000"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="flowerDescInput">Qisqacha ma'lumot</label>
+          <textarea
+            id="flowerDescInput"
+            class="form-control"
+            rows="3"
+            placeholder="Gul haqida ma'lumot..."
+            required
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="flowerFileInput">Qurilmadan rasm yuklash</label>
+          <input
+            type="file"
+            id="flowerFileInput"
+            class="form-control"
+            accept="image/*"
+            onchange="handleFlowerFileChange(event)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="flowerImgUrlInput">Yoki rasm manzili (URL)</label>
+          <input
+            type="text"
+            id="flowerImgUrlInput"
+            class="form-control"
+            placeholder="https://..."
+            oninput="handleFlowerUrlInput(event)"
+          />
+          <div class="img-preview-box">
+            <img id="flowerPreviewImg" src="logo.png" alt="Ko'rinishi" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+          Saqlash
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Google Firebase Cloud Database Settings -->
+  <div class="modal-backdrop" id="firebaseModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⚙️ Google Firebase Sozlamalari</h3>
+        <button class="modal-close" onclick="closeModal('firebaseModal')">✕</button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.5;">
+        Admin qo'shgan gullar barcha klientlar (telefon va kompyuterlar)da bir vaqtning o'zida ko'rinishi uchun Google Firebase bepul onlayn bazasining URL manzilini kiriting.
+      </p>
+      <form onsubmit="saveFirebaseSettings(event)">
+        <div class="form-group">
+          <label for="fbDbUrlInput">Firebase Realtime Database URL</label>
+          <input
+            type="url"
+            id="fbDbUrlInput"
+            class="form-control"
+            placeholder="https://nargis-gullari-default-rtdb.firebaseio.com"
+            required
+          />
+          <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+            console.firebase.google.com -> Realtime Database yaratilganda beriladigan havola
+          </small>
+        </div>
+        <div style="background: var(--green-soft); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; margin-bottom: 1.2rem; font-size: 0.85rem; line-height: 1.6;">
+          <strong>💡 1 daqiqada bepul Firebase ochish yo'li:</strong><br />
+          1. <code>console.firebase.google.com</code> ga kiring va "Add project" bosing.<br />
+          2. Chap menyudan <strong>Realtime Database</strong> -> <strong>Create Database</strong> bosing.<br />
+          3. Security rules bo'limida <strong>"Start in test mode"</strong> ni tanlang.<br />
+          4. Chiqqan havolani nusxalab shu yerga qo'ying va Saqlashni bosing!
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+          💾 Bazani ulash va Saqlash
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Google Firebase SDK for Live Cloud Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

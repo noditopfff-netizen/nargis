@@ -4,7 +4,7 @@ const ADMIN_PASS = 'nargisadmin1234';
 const STORAGE_CATEGORIES_KEY = 'nargis_categories_v1';
 const STORAGE_FLOWERS_KEY = 'nargis_flowers_v1';
 const STORAGE_ADMIN_SESSION = 'nargis_admin_logged_in';
-const STORAGE_FIREBASE_URL = 'nargis_firebase_db_url';
+const FIREBASE_DB_URL = 'https://nargis-store-default-rtdb.firebaseio.com';
 
 let firebaseApp = null;
 let firebaseDb = null;
@@ -140,12 +140,10 @@ function loadData() {
 }
 
 function initFirebase() {
-  const customDbUrl = localStorage.getItem(STORAGE_FIREBASE_URL);
-
-  if (typeof firebase !== 'undefined' && customDbUrl) {
+  if (typeof firebase !== 'undefined' && FIREBASE_DB_URL) {
     try {
       if (!firebase.apps.length) {
-        firebaseApp = firebase.initializeApp({ databaseURL: customDbUrl });
+        firebaseApp = firebase.initializeApp({ databaseURL: FIREBASE_DB_URL });
       } else {
         firebaseApp = firebase.app();
       }
@@ -168,12 +166,11 @@ function initFirebase() {
           renderCategories();
           renderFlowers();
         } else {
-          if (isAdmin) {
-            syncToCloud();
-          }
+          // If database is empty, seed it with default flowers & categories!
+          syncToCloud();
         }
       }, err => {
-        console.warn('Firebase sync warning:', err);
+        console.warn('Firebase sync note:', err.message);
         updateDbStatusBadge(false);
       });
     } catch (err) {

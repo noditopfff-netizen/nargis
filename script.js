@@ -3,9 +3,17 @@ const ADMIN_PASS = 'nargisadmin1234';
 
 const STORAGE_CATEGORIES_KEY = 'nargis_categories_v1';
 const STORAGE_FLOWERS_KEY = 'nargis_flowers_v1';
+const STORAGE_CONTACTS_KEY = 'nargis_contacts_v1';
 const STORAGE_ADMIN_SESSION = 'nargis_admin_logged_in';
 const FIREBASE_DB_URL = 'https://nargis-store-default-rtdb.firebaseio.com';
 
+const DEFAULT_CONTACTS = {
+  telegram: 'Nargistort',
+  phone: '+998 94 162 80 00',
+  phoneRaw: '+998941628000'
+};
+
+let contacts = { ...DEFAULT_CONTACTS };
 let firebaseApp = null;
 let firebaseDb = null;
 let isFirebaseConnected = false;
@@ -18,6 +26,10 @@ if (syncChannel) {
     if (event.data && event.data.type === 'SYNC') {
       if (Array.isArray(event.data.categories)) categories = event.data.categories;
       if (Array.isArray(event.data.flowers)) flowers = event.data.flowers;
+      if (event.data.contacts) {
+        contacts = event.data.contacts;
+        renderContacts();
+      }
       renderCategories();
       renderFlowers();
     }
@@ -26,12 +38,17 @@ if (syncChannel) {
 
 // Storage event listener for multi-tab sync
 window.addEventListener('storage', (e) => {
-  if (e.key === STORAGE_FLOWERS_KEY || e.key === STORAGE_CATEGORIES_KEY) {
+  if (e.key === STORAGE_FLOWERS_KEY || e.key === STORAGE_CATEGORIES_KEY || e.key === STORAGE_CONTACTS_KEY) {
     try {
       const savedCats = localStorage.getItem(STORAGE_CATEGORIES_KEY);
       if (savedCats) categories = JSON.parse(savedCats);
       const savedFl = localStorage.getItem(STORAGE_FLOWERS_KEY);
       if (savedFl) flowers = JSON.parse(savedFl);
+      const savedContacts = localStorage.getItem(STORAGE_CONTACTS_KEY);
+      if (savedContacts) {
+        contacts = JSON.parse(savedContacts);
+        renderContacts();
+      }
       renderCategories();
       renderFlowers();
     } catch (err) {}
@@ -129,14 +146,46 @@ function loadData() {
     const savedFlowers = localStorage.getItem(STORAGE_FLOWERS_KEY);
     flowers = savedFlowers ? JSON.parse(savedFlowers) : [...DEFAULT_FLOWERS];
 
+    const savedContacts = localStorage.getItem(STORAGE_CONTACTS_KEY);
+    contacts = savedContacts ? JSON.parse(savedContacts) : { ...DEFAULT_CONTACTS };
+
     isAdmin = localStorage.getItem(STORAGE_ADMIN_SESSION) === 'true';
   } catch (e) {
     categories = [...DEFAULT_CATEGORIES];
     flowers = [...DEFAULT_FLOWERS];
+    contacts = { ...DEFAULT_CONTACTS };
   }
+
+  renderContacts();
 
   // Connect to Google Firebase Realtime Cloud Database
   initFirebase();
+}
+
+function renderContacts() {
+  const tgUser = (contacts.telegram || 'Nargistort').replace('@', '');
+  const phoneText = contacts.phone || '+998 94 162 80 00';
+  const phoneRaw = contacts.phoneRaw || phoneText.replace(/\s+/g, '');
+
+  const heroTg = document.getElementById('heroTgLink');
+  if (heroTg) {
+    heroTg.href = `https://t.me/${tgUser}`;
+    heroTg.innerHTML = `✈️ Buyurtma: @${tgUser}`;
+  }
+  const heroPhone = document.getElementById('heroPhoneLink');
+  if (heroPhone) {
+    heroPhone.href = `tel:${phoneRaw}`;
+    heroPhone.innerHTML = `📞 ${phoneText}`;
+  }
+  const footerTg = document.getElementById('footerTgLink');
+  const footerTgText = document.getElementById('footerTgText');
+  if (footerTg) footerTg.href = `https://t.me/${tgUser}`;
+  if (footerTgText) footerTgText.textContent = `@${tgUser}`;
+
+  const footerPhone = document.getElementById('footerPhoneLink');
+  const footerPhoneText = document.getElementById('footerPhoneText');
+  if (footerPhone) footerPhone.href = `tel:${phoneRaw}`;
+  if (footerPhoneText) footerPhoneText.textContent = phoneText;
 }
 
 function initFirebase() {
@@ -163,10 +212,15 @@ function initFirebase() {
             flowers = val.flowers;
             localStorage.setItem(STORAGE_FLOWERS_KEY, JSON.stringify(flowers));
           }
+          if (val.contacts) {
+            contacts = val.contacts;
+            localStorage.setItem(STORAGE_CONTACTS_KEY, JSON.stringify(contacts));
+            renderContacts();
+          }
           renderCategories();
           renderFlowers();
         } else {
-          // If database is empty, seed it with default flowers & categories!
+          // If database is empty, seed it with default flowers, categories & contacts!
           syncToCloud();
         }
       }, err => {
@@ -201,6 +255,7 @@ function syncToCloud() {
     firebaseDb.ref('nargis_store').set({
       categories,
       flowers,
+      contacts,
       lastUpdated: Date.now()
     }).catch(err => {
       console.warn('Cloud sync error:', err);
@@ -212,6 +267,7 @@ function saveData() {
   try {
     localStorage.setItem(STORAGE_CATEGORIES_KEY, JSON.stringify(categories));
     localStorage.setItem(STORAGE_FLOWERS_KEY, JSON.stringify(flowers));
+    localStorage.setItem(STORAGE_CONTACTS_KEY, JSON.stringify(contacts));
   } catch (err) {
     console.warn('LocalStorage save warning:', err);
   }
@@ -223,12 +279,13 @@ function saveData() {
         type: 'SYNC',
         categories,
         flowers,
+        contacts,
         timestamp: Date.now()
       });
     } catch (e) {}
   }
 
-  // Sync to Firebase if configured
+  // Sync to Firebase Cloud
   syncToCloud();
 }
 
@@ -627,13 +684,41 @@ function deleteFlower(flowerId) {
   }
 }
 
-// Buyurtma berish: Savat va modal kerak emas — to'g'ridan-to'g'ri Telegram (@ibratway) ga o'tadi
+// Buyurtma berish: Savat va modal kerak emas — to'g'ridan-to'g'ri Telegram ga o'tadi
 function orderViaTelegram(flowerId) {
   const fl = flowers.find(f => f.id === flowerId);
   if (!fl) return;
+  const tgUser = (contacts.telegram || 'Nargistort').replace('@', '');
   const message = `Assalomu alaykum! Men "Nargis gullari" saytidan quyidagi gulni buyurtma qilmoqchiman:\n\n🌸 Gul: ${fl.name}\n💰 Narxi: ${fl.price} so'm\n\nIltimos, yetkazib berish haqida ma'lumot bersangiz.`;
-  const url = `https://t.me/ibratway?text=${encodeURIComponent(message)}`;
+  const url = `https://t.me/${tgUser}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
+}
+
+// Admin Contacts Settings Modal
+function openContactsModal() {
+  const tgInput = document.getElementById('contactTgInput');
+  const phoneInput = document.getElementById('contactPhoneInput');
+  if (tgInput) tgInput.value = contacts.telegram || '@Nargistort';
+  if (phoneInput) phoneInput.value = contacts.phone || '+998 94 162 80 00';
+  openModal('contactsModal');
+}
+
+function submitContactsForm(e) {
+  e.preventDefault();
+  const tgVal = document.getElementById('contactTgInput').value.trim();
+  const phoneVal = document.getElementById('contactPhoneInput').value.trim();
+  if (!tgVal || !phoneVal) return;
+
+  contacts = {
+    telegram: tgVal.replace('@', ''),
+    phone: phoneVal,
+    phoneRaw: phoneVal.replace(/\s+/g, '')
+  };
+
+  renderContacts();
+  saveData();
+  closeModal('contactsModal');
+  showToast('✅ Aloqa ma\'lumotlari barcha klientlar uchun yangilandi!');
 }
 
 // Google Firebase Database Settings Modal
